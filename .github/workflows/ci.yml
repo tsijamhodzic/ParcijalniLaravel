@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: sqlite3
+
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Generate key
+      run: php artisan key:generate --env=testing
+
+    - name: Run npm install
+      run: npm install && npm run build
+
+    - name: Run PHPUnit Tests
+      run: php artisan test
+
+    - name: Run PHPStan
+      run: vendor/bin/phpstan
+
+    # - name: Run test suite
+    #   run: composer run-script test
