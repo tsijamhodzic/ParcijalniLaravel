@@ -1,0 +1,24 @@
+
+name: cd
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Deploy to digitalocean server
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ vars.SERVER }}
+            username: ${{ vars.USERNAME }}
+            password: ${{ secrets.PASSWORD }}
+            script: |
+                cd /var/www/html/App/imandic
+                git pull
+                composer install --no-dev
+                php artisan migrate
+                php artisan config:cache
+                php artisan route:cache
