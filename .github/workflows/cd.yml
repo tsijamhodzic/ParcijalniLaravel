@@ -16,7 +16,7 @@ jobs:
             username: ${{ vars.USERNAME }}
             password: ${{ secrets.PASSWORD }}
             script: |
-                cd /var/www/html/App/imandic
+                cd /var/www/html/App
                 git pull
                 composer install --no-dev
                 php artisan migrate
